@@ -116,4 +116,45 @@ export const translations = {
       dark: 'Dark',
       light: 'Light',
       auto: 'Auto',
+      profile: 'Profile',
+      bio: 'Bio',
+      bioPlaceholder: 'Tell something about yourself...',
+      birthDate: 'Birth Date',
+      avatarUrl: 'Avatar URL',
+      save: 'Save'
     },
+    chat: {
+      search: 'Search',
+      typeMessage: 'Type a message...',
+      online: 'online',
+      typing: 'typing...',
+    },
+    menu: {
+      addFriend: 'Add Friend',
+      createGroup: 'Create Group',
+      createChannel: 'Create Channel'
+    },
+    friend: {
+      addFriend: 'Add Friend',
+      enterUsername: 'Enter username',
+      sendRequest: 'Send Request',
+      requestSent: 'Request sent!',
+      requests: 'Friend Requests',
+      username: 'Username'
+    },
+    group: {
+      create: 'Create Group',
+      name: 'Group Name',
+      description: 'Description',
+      members: 'Members',
+      addMember: 'Add Member'
+    },
+    channel: {
+      create: 'Create Channel',
+      name: 'Channel Name',
+      description: 'Description'
+    }
+  }
+};
+
+export default translations;
