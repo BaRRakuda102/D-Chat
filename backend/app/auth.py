@@ -5,6 +5,7 @@ from fastapi import Depends, HTTPException, status, WebSocketException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from .models import Token
 import os
+from typing import Optional
 
 SECRET_KEY = os.getenv("JWT_SECRET", "change-this-in-production")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")

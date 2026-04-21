@@ -1,5 +1,5 @@
 from fastapi import WebSocket, WebSocketException
-from typing import Dict, Set, List
+from typing import Dict, Set, List, Optional
 import json
 from datetime import datetime
 from .redis_client import redis_client
