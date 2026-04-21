@@ -221,23 +221,28 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
         if conn_id:
             await manager.disconnect(conn_id)
 
-# ==================== HEALTH ====================
 
-@app.get("/api/health")
-async def health():
-    try:
-        redis_ok = await redis_client.client.ping()
-        return {"status": "ok", "redis": redis_ok}
-    except:
-        return {"status": "degraded", "redis": False}
+# ==================== STATIC FILES (SPA) ====================
 
-# Static files (production)
-static_dir = os.getenv("STATIC_DIR")
+from starlette.staticfiles import StaticFiles
+from starlette.responses import FileResponse
+
+class SPAStaticFiles(StaticFiles):
+    async def get_response(self, path: str, scope):
+        try:
+            return await super().get_response(path, scope)
+        except HTTPException as ex:
+            if ex.status_code == 404:
+                return FileResponse(os.path.join(self.directory, "index.html"))
+            raise ex
+
+static_dir = os.getenv("STATIC_DIR", "./static")
 if static_dir and os.path.exists(static_dir):
-    app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
+    app.mount("/", SPAStaticFiles(directory=static_dir, html=True), name="static")
 elif os.path.exists("./static"):
-    app.mount("/", StaticFiles(directory="./static", html=True), name="static")
+    app.mount("/", SPAStaticFiles(directory="./static", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+    

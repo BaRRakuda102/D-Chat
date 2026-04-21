@@ -5,7 +5,7 @@ from enum import Enum
 
 class UserCreate(BaseModel):
     username: str = Field(..., min_length=3, max_length=32, pattern=r'^[a-zA-Z0-9_]+$')
-    password: str = Field(..., min_length=6, max_length=128)
+    password: str = Field(..., min_length=6, max_length=71)
     display_name: Optional[str] = Field(None, max_length=64)
 
 class UserLogin(BaseModel):
