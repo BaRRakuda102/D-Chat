@@ -116,3 +116,4 @@ export const translations = {
       dark: 'Dark',
       light: 'Light',
       auto: 'Auto',
+    },
