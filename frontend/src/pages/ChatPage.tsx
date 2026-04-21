@@ -5,18 +5,26 @@ import { useThemeStore } from '../store/themeStore'
 import { useWebSocket } from '../hooks/useWebSocket'
 import { useTranslation } from '../i18n/useTranslation'
 import { format } from 'date-fns'
-import { LogOut, Send, Search, Menu, Settings, Moon, Sun, Globe } from 'lucide-react'
+import { LogOut, Send, Search, User } from 'lucide-react'
+import CreateMenu from '../components/CreateMenu'
+import AddFriendModal from '../components/AddFriendModal'
+import CreateGroupModal from '../components/CreateGroupModal'
+import CreateChannelModal from '../components/CreateChannelModal'
+import ProfileModal from '../components/ProfileModal'
 
 export default function ChatPage() {
   const { token, user, logout } = useAuthStore()
   const { chats, activeChat, messages, setChats, setActiveChat, setMessages } = useChatStore()
-  const { theme, setTheme, language, setLanguage } = useThemeStore()
+  const { language } = useThemeStore()
   const { sendMessage, sendTyping } = useWebSocket()
   const { t } = useTranslation()
   
   const [input, setInput] = useState('')
   const [search, setSearch] = useState('')
-  const [showSettings, setShowSettings] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
+  const [showAddFriend, setShowAddFriend] = useState(false)
+  const [showCreateGroup, setShowCreateGroup] = useState(false)
+  const [showCreateChannel, setShowCreateChannel] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const typingTimeout = useRef<NodeJS.Timeout>()
 
@@ -71,7 +79,10 @@ export default function ChatPage() {
         <div className="p-4 border-b border-[var(--border)]">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--accent)] to-purple-500 flex items-center justify-center text-white font-bold shadow-md">
+              <div 
+                className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--accent)] to-purple-500 flex items-center justify-center text-white font-bold shadow-md cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => setShowProfile(true)}
+              >
                 {user?.display_name?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase()}
               </div>
               <div>
@@ -81,10 +92,10 @@ export default function ChatPage() {
             </div>
             <div className="flex gap-1">
               <button 
-                onClick={() => setShowSettings(!showSettings)}
+                onClick={() => setShowProfile(true)}
                 className="glass-button !p-2 !rounded-lg"
               >
-                <Settings className="w-4 h-4" />
+                <User className="w-4 h-4" />
               </button>
               <button 
                 onClick={logout}
@@ -95,39 +106,22 @@ export default function ChatPage() {
             </div>
           </div>
 
-          {/* Settings Panel */}
-          {showSettings && (
-            <div className="glass-strong rounded-xl p-3 mb-3 animate-fade-in space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[var(--text-secondary)]">{t.settings.theme}</span>
-                <div className="flex gap-1">
-                  <button onClick={() => setTheme('dark')} className={`p-1.5 rounded-lg ${theme === 'dark' ? 'bg-[var(--accent)] text-white' : 'glass-button !p-1.5'}`}>
-                    <Moon className="w-3 h-3" />
-                  </button>
-                  <button onClick={() => setTheme('light')} className={`p-1.5 rounded-lg ${theme === 'light' ? 'bg-[var(--accent)] text-white' : 'glass-button !p-1.5'}`}>
-                    <Sun className="w-3 h-3" />
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[var(--text-secondary)]">{t.settings.language}</span>
-                <div className="flex gap-1">
-                  <button onClick={() => setLanguage('ru')} className={`px-2 py-1 rounded-lg text-xs ${language === 'ru' ? 'bg-[var(--accent)] text-white' : 'glass-button !px-2 !py-1'}`}>RU</button>
-                  <button onClick={() => setLanguage('en')} className={`px-2 py-1 rounded-lg text-xs ${language === 'en' ? 'bg-[var(--accent)] text-white' : 'glass-button !px-2 !py-1'}`}>EN</button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="relative">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-[var(--text-tertiary)]" />
-            <input
-              type="text"
-              placeholder={t.chat.search}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="glass-input w-full !pl-10"
+          <div className="flex gap-2 mb-3">
+            <CreateMenu 
+              onAddFriend={() => setShowAddFriend(true)}
+              onCreateGroup={() => setShowCreateGroup(true)}
+              onCreateChannel={() => setShowCreateChannel(true)}
             />
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-2.5 w-4 h-4 text-[var(--text-tertiary)]" />
+              <input
+                type="text"
+                placeholder={t.chat.search}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="glass-input w-full !pl-10"
+              />
+            </div>
           </div>
         </div>
 
@@ -270,6 +264,13 @@ export default function ChatPage() {
           </div>
         )}
       </div>
+
+      {/* ===== МОДАЛКИ ВСТАВЛЯЮТСЯ ЗДЕСЬ ===== */}
+      {/* Они рендерятся поверх всего контента благодаря fixed позиционированию */}
+      {showAddFriend && <AddFriendModal onClose={() => setShowAddFriend(false)} />}
+      {showCreateGroup && <CreateGroupModal onClose={() => setShowCreateGroup(false)} onCreated={() => {}} />}
+      {showCreateChannel && <CreateChannelModal onClose={() => setShowCreateChannel(false)} onCreated={() => {}} />}
+      {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
     </div>
   )
 }

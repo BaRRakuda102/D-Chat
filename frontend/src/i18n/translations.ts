@@ -45,6 +45,43 @@ export const translations = {
       online: 'в сети',
       typing: 'печатает...',
     }
+
+  
+  menu: {
+    addFriend: 'Добавить в друзья',
+    createGroup: 'Создать группу',
+    createChannel: 'Создать канал'
+  },
+  friend: {
+    addFriend: 'Добавить в друзья',
+    enterUsername: 'Введите имя пользователя',
+    sendRequest: 'Отправить запрос',
+    requestSent: 'Запрос отправлен!',
+    requests: 'Запросы в друзья',
+    username: 'Имя пользователя'
+  },
+  group: {
+    create: 'Создать группу',
+    name: 'Название группы',
+    description: 'Описание',
+    members: 'Участники',
+    addMember: 'Добавить участника'
+  },
+  channel: {
+    create: 'Создать канал',
+    name: 'Название канала',
+    description: 'Описание'
+  },
+  settings: {
+    // ... существующие ...
+    profile: 'Профиль',
+    bio: 'О себе',
+    bioPlaceholder: 'Расскажите о себе...',
+    birthDate: 'Дата рождения',
+    avatarUrl: 'URL аватарки',
+    save: 'Сохранить'
+  }
+}
   },
   en: {
     app: {
