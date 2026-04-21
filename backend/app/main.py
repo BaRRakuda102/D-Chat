@@ -6,12 +6,17 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 import uuid
 import os
+from typing import List
 
-from .models import UserCreate, UserLogin, UserResponse, Token, MessageCreate, MessageResponse, ChatInfo
+from .models import (
+    UserCreate, UserLogin, UserResponse, Token, MessageCreate, MessageResponse, ChatInfo,
+    UserUpdate, FriendRequestCreate, FriendRequestResponse, FriendResponse,
+    GroupCreate, ChannelCreate
+)
 from .auth import get_password_hash, verify_password, create_access_token, get_current_user
 from .redis_client import redis_client
 from .websocket_manager import manager
-from .database import get_db, init_db, UserDB, ChatDB, MessageDB
+from .database import get_db, init_db, UserDB, ChatDB, MessageDB, FriendRequestDB
 from .rate_limiter import RateLimiter
 
 app = FastAPI(title="D-Chat API", version="1.0.0")
