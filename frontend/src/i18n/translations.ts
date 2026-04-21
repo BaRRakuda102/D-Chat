@@ -115,4 +115,4 @@ export const translations = {
       language: 'Language',
       dark: 'Dark',
       light: 'Light',
-      auto:
+      auto: 'Auto',
