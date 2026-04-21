@@ -31,24 +31,8 @@ export const translations = {
         desc: 'Входите с любого устройства'
       }
     },
-    settings: {
-      title: 'Настройки',
-      theme: 'Тема',
-      language: 'Язык',
-      dark: 'Тёмная',
-      light: 'Светлая',
-      auto: 'Авто',
-    },
-    chat: {
-      search: 'Поиск',
-      typeMessage: 'Написать сообщение...',
-      online: 'в сети',
-      typing: 'печатает...',
-    }
 
-  },
-
-  menu: {
+    menu: {
     addFriend: 'Добавить в друзья',
     createGroup: 'Создать группу',
     createChannel: 'Создать канал'
@@ -73,16 +57,23 @@ export const translations = {
     name: 'Название канала',
     description: 'Описание'
   },
-  settings: {
-    // ... существующие ...
-    profile: 'Профиль',
-    bio: 'О себе',
-    bioPlaceholder: 'Расскажите о себе...',
-    birthDate: 'Дата рождения',
-    avatarUrl: 'URL аватарки',
-    save: 'Сохранить'
-  }
-}
+      
+    settings: {
+      title: 'Настройки',
+      theme: 'Тема',
+      language: 'Язык',
+      dark: 'Тёмная',
+      light: 'Светлая',
+      auto: 'Авто',
+    },
+    chat: {
+      search: 'Поиск',
+      typeMessage: 'Написать сообщение...',
+      online: 'в сети',
+      typing: 'печатает...',
+    }
+
+  },
   en: {
     app: {
       name: 'D-Chat',
