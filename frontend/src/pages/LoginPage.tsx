@@ -17,7 +17,7 @@ export default function LoginPage() {
   const { theme, setTheme, language, setLanguage } = useThemeStore()
   const { t } = useTranslation()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
@@ -25,7 +25,11 @@ export default function LoginPage() {
     const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register'
     const body = isLogin 
       ? { username, password }
-      : { username, password, display_name: displayName || username }
+      : { 
+          username, 
+          password, 
+          display_name: displayName || username  // <-- Важно!
+        }
 
     try {
       const res = await fetch(endpoint, {
@@ -36,7 +40,8 @@ export default function LoginPage() {
 
       if (!res.ok) {
         const err = await res.json()
-        throw new Error(err.detail || 'Error')
+        // Исправлено: показываем detail или полный текст ошибки
+        throw new Error(err.detail || JSON.stringify(err) || 'Unknown error')
       }
 
       const { access_token } = await res.json()
@@ -48,7 +53,7 @@ export default function LoginPage() {
 
       setAuth(access_token, user)
     } catch (err: any) {
-      setError(err.message)
+      setError(err.message || String(err))
     } finally {
       setLoading(false)
     }
@@ -187,15 +192,15 @@ export default function LoginPage() {
               </div>
               
               {!isLogin && (
-                <div>
-                  <input
-                    type="text"
-                    placeholder={t.app.displayName}
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    className="glass-input w-full"
-                  />
-                </div>
+              <div>
+                <input
+                type="text"
+                 placeholder={t.app.displayName}
+                 value={displayName}
+                 onChange={(e) => setDisplayName(e.target.value)}
+                 className="glass-input w-full"
+                 />
+              </div>
               )}
               
               <div>
@@ -211,10 +216,10 @@ export default function LoginPage() {
               </div>
 
               {error && (
-                <p className="text-red-400 text-sm text-center bg-red-500/10 rounded-lg p-2">
-                  {error}
-                </p>
-              )}
+  <div className="text-red-400 text-sm text-center bg-red-500/10 rounded-lg p-2">
+    {typeof error === 'string' ? error : JSON.stringify(error)}
+  </div>
+)}
 
               <button
                 type="submit"

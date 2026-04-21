@@ -4,13 +4,13 @@ from datetime import datetime
 from enum import Enum
 
 class UserCreate(BaseModel):
-    username: str = Field(..., min_length=3, max_length=32, pattern=r'^[a-zA-Z0-9_]+$')
+    username: str = Field(..., min_length=3, max_length=32, pattern=r'^[a-zA-Z0-9_@.]+$')  # Email allowed
     password: str = Field(..., min_length=6, max_length=71)
     display_name: Optional[str] = Field(None, max_length=64)
 
 class UserLogin(BaseModel):
-    username: str
-    password: str
+    username: str = Field(..., min_length=3, max_length=32)  # Can be email
+    password: str = Field(..., min_length=6, max_length=71)
 
 class UserResponse(BaseModel):
     id: int
@@ -46,7 +46,7 @@ class MessageResponse(BaseModel):
 class ChatInfo(BaseModel):
     id: str
     name: str
-    type: str  # "private" | "group"
+    type: str
     participants: List[int]
     last_message: Optional[MessageResponse]
     unread_count: int = 0
