@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
@@ -230,19 +231,22 @@ async def health():
     except:
         return {"status": "degraded", "redis": False}
 
-# ==================== SPA FALLBACK ====================
+# ==================== STATIC FILES (SPA) ====================
 
-@app.get("/{full_path:path}")
-async def serve_spa(full_path: str):
-    # Не перехватываем API, WebSocket, docs
-    if full_path.startswith("api/") or full_path.startswith("ws/") or full_path.startswith("docs") or full_path.startswith("openapi"):
-        raise HTTPException(404, "Not found")
-    
-    static_dir = os.getenv("STATIC_DIR", "./static")
-    index_path = os.path.join(static_dir, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    raise HTTPException(404, "Not found")
+class SPAStaticFiles(StaticFiles):
+    async def get_response(self, path: str, scope):
+        try:
+            return await super().get_response(path, scope)
+        except HTTPException as exc:
+            if exc.status_code == 404:
+                index_path = os.path.join(self.directory, "index.html")
+                if os.path.exists(index_path):
+                    return FileResponse(index_path)
+            raise exc
+
+static_dir = os.getenv("STATIC_DIR", "./static")
+if static_dir and os.path.exists(static_dir):
+    app.mount("/", SPAStaticFiles(directory=static_dir, html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
