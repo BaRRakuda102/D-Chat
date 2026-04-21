@@ -46,7 +46,8 @@ export const translations = {
       typing: 'печатает...',
     }
 
-  
+  },
+
   menu: {
     addFriend: 'Добавить в друзья',
     createGroup: 'Создать группу',
@@ -82,7 +83,6 @@ export const translations = {
     save: 'Сохранить'
   }
 }
-  },
   en: {
     app: {
       name: 'D-Chat',
