@@ -224,25 +224,21 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
 
 # ==================== STATIC FILES (SPA) ====================
 
-from starlette.staticfiles import StaticFiles
-from starlette.responses import FileResponse
+# ==================== STATIC FILES (SPA) ====================
 
-class SPAStaticFiles(StaticFiles):
-    async def get_response(self, path: str, scope):
-        try:
-            return await super().get_response(path, scope)
-        except HTTPException as ex:
-            if ex.status_code == 404:
-                return FileResponse(os.path.join(self.directory, "index.html"))
-            raise ex
+from fastapi.responses import FileResponse
 
-static_dir = os.getenv("STATIC_DIR", "./static")
-if static_dir and os.path.exists(static_dir):
-    app.mount("/", SPAStaticFiles(directory=static_dir, html=True), name="static")
-elif os.path.exists("./static"):
-    app.mount("/", SPAStaticFiles(directory="./static", html=True), name="static")
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str):
+    if full_path.startswith("api/") or full_path.startswith("ws/") or full_path.startswith("docs") or full_path.startswith("openapi"):
+        raise HTTPException(404, "Not found")
+    
+    static_dir = os.getenv("STATIC_DIR", "./static")
+    index_path = os.path.join(static_dir, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    raise HTTPException(404, "Not found")
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-    

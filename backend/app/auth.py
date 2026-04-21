@@ -1,26 +1,38 @@
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status, WebSocketException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 from .models import Token
 import os
-from typing import Optional
 
 SECRET_KEY = os.getenv("JWT_SECRET", "change-this-in-production")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Argon2 — современная замена bcrypt, без ограничений
+ph = PasswordHasher(
+    time_cost=2,
+    memory_cost=65536,
+    parallelism=1,
+    hash_len=32,
+    salt_len=16
+)
+
 security = HTTPBearer()
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        ph.verify(hashed_password, plain_password)
+        return True
+    except VerifyMismatchError:
+        return False
 
 def get_password_hash(password: str) -> str:
-     return pwd_context.hash(password[:71])
+    return ph.hash(password)
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire, "iat": datetime.utcnow(), "type": "access"})
@@ -40,7 +52,6 @@ def decode_token(token: str) -> dict:
         )
 
 async def get_current_user_ws(token: str) -> dict:
-    """Для WebSocket - возвращает payload или raises WebSocketException"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         if payload.get("type") != "access":
