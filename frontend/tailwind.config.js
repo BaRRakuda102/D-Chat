@@ -7,17 +7,22 @@ export default {
   theme: {
     extend: {
       colors: {
-        telegram: {
-          blue: '#0088cc',
-          light: '#f5f5f5',
-          message: '#effdde',
-          messageOut: '#eeffde',
-          bg: '#ffffff',
-          sidebar: '#f5f5f5',
-          header: '#ffffff',
-          text: '#000000',
-          secondary: '#707579'
+        mac: {
+          bg: 'var(--bg-primary)',
+          secondary: 'var(--bg-secondary)',
+          tertiary: 'var(--bg-tertiary)',
+          glass: 'var(--bg-glass)',
+          sidebar: 'var(--bg-sidebar)',
+          accent: 'var(--accent)',
+          'accent-hover': 'var(--accent-hover)',
+          text: 'var(--text-primary)',
+          'text-secondary': 'var(--text-secondary)',
+          border: 'var(--border)',
         }
+      },
+      borderRadius: {
+        'mac': '16px',
+        'mac-lg': '24px',
       }
     },
   },
