@@ -31,33 +31,6 @@ export const translations = {
         desc: 'Входите с любого устройства'
       }
     },
-
-    menu: {
-    addFriend: 'Добавить в друзья',
-    createGroup: 'Создать группу',
-    createChannel: 'Создать канал'
-  },
-  friend: {
-    addFriend: 'Добавить в друзья',
-    enterUsername: 'Введите имя пользователя',
-    sendRequest: 'Отправить запрос',
-    requestSent: 'Запрос отправлен!',
-    requests: 'Запросы в друзья',
-    username: 'Имя пользователя'
-  },
-  group: {
-    create: 'Создать группу',
-    name: 'Название группы',
-    description: 'Описание',
-    members: 'Участники',
-    addMember: 'Добавить участника'
-  },
-  channel: {
-    create: 'Создать канал',
-    name: 'Название канала',
-    description: 'Описание'
-  },
-      
     settings: {
       title: 'Настройки',
       theme: 'Тема',
@@ -65,14 +38,44 @@ export const translations = {
       dark: 'Тёмная',
       light: 'Светлая',
       auto: 'Авто',
+      profile: 'Профиль',
+      bio: 'О себе',
+      bioPlaceholder: 'Расскажите о себе...',
+      birthDate: 'Дата рождения',
+      avatarUrl: 'URL аватарки',
+      save: 'Сохранить'
     },
     chat: {
       search: 'Поиск',
       typeMessage: 'Написать сообщение...',
       online: 'в сети',
       typing: 'печатает...',
+    },
+    menu: {
+      addFriend: 'Добавить в друзья',
+      createGroup: 'Создать группу',
+      createChannel: 'Создать канал'
+    },
+    friend: {
+      addFriend: 'Добавить в друзья',
+      enterUsername: 'Введите имя пользователя',
+      sendRequest: 'Отправить запрос',
+      requestSent: 'Запрос отправлен!',
+      requests: 'Запросы в друзья',
+      username: 'Имя пользователя'
+    },
+    group: {
+      create: 'Создать группу',
+      name: 'Название группы',
+      description: 'Описание',
+      members: 'Участники',
+      addMember: 'Добавить участника'
+    },
+    channel: {
+      create: 'Создать канал',
+      name: 'Название канала',
+      description: 'Описание'
     }
-
   },
   en: {
     app: {
@@ -112,15 +115,4 @@ export const translations = {
       language: 'Language',
       dark: 'Dark',
       light: 'Light',
-      auto: 'Auto',
-    },
-    chat: {
-      search: 'Search',
-      typeMessage: 'Write a message...',
-      online: 'online',
-      typing: 'typing...',
-    }
-  }
-} as const
-
-export type TranslationKey = keyof typeof translations.en
+      auto:

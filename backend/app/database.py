@@ -34,17 +34,19 @@ class UserDB(Base):
     sent_requests = relationship("FriendRequestDB", foreign_keys="FriendRequestDB.from_user_id", back_populates="from_user")
     received_requests = relationship("FriendRequestDB", foreign_keys="FriendRequestDB.to_user_id", back_populates="to_user")
 
+
+
 class FriendRequestDB(Base):
     __tablename__ = "friend_requests"
     
     id = Column(Integer, primary_key=True, index=True)
     from_user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     to_user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    status = Column(String(16), default="pending")  # pending, accepted, rejected
+    status = Column(String(16), default="pending")
     created_at = Column(DateTime, default=datetime.utcnow)
     
     from_user = relationship("UserDB", foreign_keys=[from_user_id], back_populates="sent_requests")
-    to_user_rel = relationship("UserDB", foreign_keys=[to_user_id], back_populates="received_requests")
+    to_user = relationship("UserDB", foreign_keys=[to_user_id], back_populates="received_requests")
 
 class ChatDB(Base):
     __tablename__ = "chats"
