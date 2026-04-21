@@ -4,7 +4,8 @@
 
 @layer base {
   :root {
-    /* macOS Dark (default) */
+    /* ===== macOS Dark Theme (default) ===== */
+    /* Backgrounds */
     --bg-primary: #1a1a1a;
     --bg-secondary: #2d2d2d;
     --bg-tertiary: #3d3d3d;
@@ -15,28 +16,58 @@
     --bg-message-out: rgba(0, 122, 255, 0.15);
     --bg-input: rgba(50, 50, 50, 0.6);
     
+    /* Text Colors */
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.6);
     --text-tertiary: rgba(255, 255, 255, 0.4);
     
+    /* Accent Colors */
     --accent: #007AFF;
     --accent-hover: #0051D5;
     --accent-glow: rgba(0, 122, 255, 0.3);
+    --accent-success: #34C759;
+    --accent-error: #FF3B30;
+    --accent-warning: #FF9500;
     
+    /* Borders */
     --border: rgba(255, 255, 255, 0.1);
     --border-hover: rgba(255, 255, 255, 0.2);
     
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
     --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
     --shadow-button: 0 2px 8px rgba(0, 122, 255, 0.25);
     
+    /* Border Radius */
+    --radius-xs: 4px;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 24px;
+    --radius-2xl: 32px;
     --radius-full: 9999px;
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+    --spacing-2xl: 32px;
+    
+    /* Transitions */
+    --transition-fast: 150ms;
+    --transition-base: 200ms;
+    --transition-slow: 300ms;
+    --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
   }
 
   [data-theme="light"] {
+    /* ===== Light Theme ===== */
+    /* Backgrounds */
     --bg-primary: #f5f5f7;
     --bg-secondary: #ffffff;
     --bg-tertiary: #e8e8ed;
@@ -47,34 +78,84 @@
     --bg-message-out: rgba(0, 122, 255, 0.1);
     --bg-input: rgba(240, 240, 240, 0.6);
     
+    /* Text Colors */
     --text-primary: #1d1d1f;
     --text-secondary: rgba(0, 0, 0, 0.55);
     --text-tertiary: rgba(0, 0, 0, 0.3);
     
+    /* Accent Colors */
     --accent: #007AFF;
     --accent-hover: #0051D5;
     --accent-glow: rgba(0, 122, 255, 0.2);
+    --accent-success: #34C759;
+    --accent-error: #FF3B30;
+    --accent-warning: #FF9500;
     
+    /* Borders */
     --border: rgba(0, 0, 0, 0.08);
     --border-hover: rgba(0, 0, 0, 0.15);
     
+    /* Shadows */
     --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.1);
     --shadow-button: 0 2px 8px rgba(0, 122, 255, 0.2);
   }
 
+  /* ===== Base Styles ===== */
   * {
-    @apply transition-colors duration-200;
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+    transition-duration: var(--transition-base);
+    transition-timing-function: var(--ease-out);
   }
 
   body {
-    @apply antialiased;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ===== Custom Scrollbar ===== */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: var(--radius-full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-hover);
+  }
+
+  /* ===== Selection Style ===== */
+  ::selection {
+    background: var(--accent);
+    color: white;
+  }
+
+  ::-moz-selection {
+    background: var(--accent);
+    color: white;
+  }
+
+  /* ===== Focus Styles ===== */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
   }
 }
 
 @layer components {
+  /* ===== Glassmorphism Components ===== */
   .glass {
     background: var(--bg-glass);
     backdrop-filter: blur(20px) saturate(180%);
@@ -88,28 +169,7 @@
     backdrop-filter: blur(40px) saturate(200%);
     -webkit-backdrop-filter: blur(40px) saturate(200%);
     border: 1px solid var(--border-hover);
-  }
-
-  .glass-button {
-    @apply glass px-6 py-3 rounded-full font-medium text-sm;
-    @apply hover:scale-105 active:scale-95;
-    @apply transition-all duration-200 ease-out;
-  }
-
-  .glass-input {
-    background: var(--bg-input);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--border);
-    @apply rounded-xl px-4 py-3 text-sm outline-none;
-    @apply focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-glow)];
-    @apply transition-all duration-200;
-  }
-
-  .glass-card {
-    @apply glass rounded-2xl p-6;
-    @apply hover:shadow-lg hover:border-[var(--border-hover)];
-    @apply transition-all duration-300 ease-out;
+    box-shadow: var(--shadow-lg);
   }
 
   .glass-sidebar {
@@ -119,61 +179,347 @@
     border-right: 1px solid var(--border);
   }
 
-  .message-bubble {
-    @apply max-w-[75%] rounded-2xl px-5 py-3 text-sm relative;
+  .glass-card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    transition: all var(--transition-slow) var(--ease-out);
+  }
+
+  .glass-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  /* ===== Buttons ===== */
+  .glass-button {
+    background: var(--bg-glass);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all var(--transition-base) var(--ease-out);
+    cursor: pointer;
+  }
+
+  .glass-button:hover {
+    transform: scale(1.02);
+    border-color: var(--border-hover);
+    background: var(--bg-glass-hover);
+  }
+
+  .glass-button:active {
+    transform: scale(0.98);
+  }
+
+  .glass-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ===== Inputs ===== */
+  .glass-input {
+    background: var(--bg-input);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    transition: all var(--transition-base) var(--ease-out);
+    width: 100%;
+  }
+
+  .glass-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+  }
+
+  .glass-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ===== Message Bubbles ===== */
+  .message-bubble {
+    max-width: 75%;
+    border-radius: var(--radius-xl);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    position: relative;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    word-wrap: break-word;
+    word-break: break-word;
   }
 
   .message-in {
     background: var(--bg-message-in);
     border: 1px solid var(--border);
-    border-bottom-left-radius: 4px;
+    border-bottom-left-radius: var(--radius-xs);
   }
 
   .message-out {
     background: var(--bg-message-out);
     border: 1px solid rgba(0, 122, 255, 0.2);
-    border-bottom-right-radius: 4px;
+    border-bottom-right-radius: var(--radius-xs);
   }
 
-  .scrollbar-mac {
+  /* ===== Scrollbars ===== */
+  .custom-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
   }
 
-  .scrollbar-mac::-webkit-scrollbar {
+  .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
 
-  .scrollbar-mac::-webkit-scrollbar-track {
+  .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .scrollbar-mac::-webkit-scrollbar-thumb {
+  .custom-scrollbar::-webkit-scrollbar-thumb {
     background: var(--border);
     border-radius: var(--radius-full);
   }
 
-  .scrollbar-mac::-webkit-scrollbar-thumb:hover {
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--border-hover);
   }
 
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out;
-  }
-
+  /* ===== Animations ===== */
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
   }
 
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+      transform: translateX(-2px);
+    }
+    20%, 40%, 60%, 80% {
+      transform: translateX(2px);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ===== Animation Classes ===== */
+  .animate-fade-in {
+    animation: fadeIn var(--transition-slow) var(--ease-out);
+  }
+
+  .animate-fade-out {
+    animation: fadeOut var(--transition-slow) var(--ease-out);
+  }
+
+  .animate-slide-up {
+    animation: slideUp var(--transition-slow) var(--ease-out);
+  }
+
+  .animate-slide-down {
+    animation: slideDown var(--transition-slow) var(--ease-out);
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft var(--transition-slow) var(--ease-out);
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight var(--transition-slow) var(--ease-out);
+  }
+
+  .animate-scale-in {
+    animation: scaleIn var(--transition-slow) var(--ease-out);
+  }
+
+  .animate-shake {
+    animation: shake 0.5s var(--ease-out);
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin 1s linear infinite;
+  }
+
+  /* ===== Animation Delays ===== */
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+  
+  .delay-1000 {
+    animation-delay: 1000ms;
+  }
+
+  /* ===== Utility Classes ===== */
+  .truncate-multiline {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ===== Typography ===== */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+@layer utilities {
+  /* ===== Custom Utilities ===== */
+  .backdrop-blur-safe {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .bg-gradient-macos {
+    background: linear-gradient(135deg, var(--bg-glass) 0%, var(--bg-glass-hover) 100%);
+  }
+
+  .shadow-macos {
+    box-shadow: var(--shadow-glass);
+  }
+
+  /* ===== Status Colors ===== */
+  .status-online {
+    background-color: var(--accent-success);
+  }
+  
+  .status-offline {
+    background-color: var(--text-tertiary);
+  }
+  
+  .status-away {
+    background-color: var(--accent-warning);
+  }
+  
+  .status-busy {
+    background-color: var(--accent-error);
   }
 }

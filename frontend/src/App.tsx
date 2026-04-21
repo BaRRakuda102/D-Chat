@@ -1,38 +1,51 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { useAuthStore } from './store/authStore'
-import { useThemeStore } from './store/themeStore'
-import { useEffect } from 'react'
-import LoginPage from './pages/LoginPage'
-import ChatPage from './pages/ChatPage'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './store/authStore';
+import { useThemeStore } from './store/themeStore';
+import { useEffect } from 'react';
+import LoginPage from './pages/LoginPage';
+import ChatPage from './pages/ChatPage';
 
 function App() {
-  const token = useAuthStore((state) => state.token)
-  const theme = useThemeStore((state) => state.theme)
+  const token = useAuthStore((state) => state.token);
+  const { theme } = useThemeStore((state) => state); // деструктуризация для симметрии
 
   useEffect(() => {
-    const root = document.documentElement
+    const root = document.documentElement;
+    const applyTheme = () => {
+      if (theme === 'auto') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      } else {
+        root.setAttribute('data-theme', theme);
+      }
+    };
+
+    applyTheme();
+
+    // Добавляем слушатель для авто-темы (опционально, но делает логику полнее)
+    let mediaQuery: MediaQueryList | null = null;
     if (theme === 'auto') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      root.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
-    } else {
-      root.setAttribute('data-theme', theme)
+      mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => applyTheme();
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery?.removeEventListener('change', handleChange);
     }
-  }, [theme])
+  }, [theme]);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route 
           path="/login" 
-          element={token ? <Navigate to="/" /> : <LoginPage />} 
+          element={token ? <Navigate to="/" replace /> : <LoginPage />} 
         />
         <Route 
           path="/*" 
-          element={token ? <ChatPage /> : <Navigate to="/login" />} 
+          element={token ? <ChatPage /> : <Navigate to="/login" replace />} 
         />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
