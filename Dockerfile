@@ -16,7 +16,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # зависимости
-COPY requirements.txt .
+COPY backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # копируем backend (всё кроме frontend)
