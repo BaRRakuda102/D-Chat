@@ -11,7 +11,6 @@ SECRET_KEY = os.getenv("JWT_SECRET", "change-this-in-production")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
-# Argon2 — современная замена bcrypt, без ограничений
 ph = PasswordHasher(
     time_cost=2,
     memory_cost=65536,

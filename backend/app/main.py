@@ -1,11 +1,10 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 import uuid
 import os
-import json
 
 from .models import UserCreate, UserLogin, UserResponse, Token, MessageCreate, MessageResponse, ChatInfo
 from .auth import get_password_hash, verify_password, create_access_token, get_current_user
@@ -221,15 +220,21 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
         if conn_id:
             await manager.disconnect(conn_id)
 
+# ==================== HEALTH ====================
 
-# ==================== STATIC FILES (SPA) ====================
+@app.get("/api/health")
+async def health():
+    try:
+        redis_ok = await redis_client.client.ping()
+        return {"status": "ok", "redis": redis_ok}
+    except:
+        return {"status": "degraded", "redis": False}
 
-# ==================== STATIC FILES (SPA) ====================
-
-from fastapi.responses import FileResponse
+# ==================== SPA FALLBACK ====================
 
 @app.get("/{full_path:path}")
 async def serve_spa(full_path: str):
+    # Не перехватываем API, WebSocket, docs
     if full_path.startswith("api/") or full_path.startswith("ws/") or full_path.startswith("docs") or full_path.startswith("openapi"):
         raise HTTPException(404, "Not found")
     
