@@ -197,7 +197,10 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
     
     try:
         user_id, conn_id = await manager.connect(websocket, token)
-        
+
+        if user_id is None:
+            return
+
         while True:
             data = await websocket.receive_json()
             msg_type = data.get("type")
