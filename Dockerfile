@@ -1,31 +1,15 @@
-# ========= FRONTEND =========
-FROM node:18-alpine AS frontend-builder
-
+# Stage 2: Python backend
+FROM python:3.11-slim AS production
 WORKDIR /app
 
-COPY frontend/package*.json ./
-RUN npm install
-
-COPY frontend/ ./
-RUN npm run build
-
-
-# ========= BACKEND =========
-FROM python:3.11-slim
-
-WORKDIR /app
-
-# зависимости
-COPY backend/requirements.txt ./requirements.txt
+# Python deps
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# копируем backend (всё кроме frontend)
-COPY . .
+# Backend code ← ВАЖНО: копируем в /app/app/
+COPY backend/app/ ./app/
 
-# копируем фронт билд
-COPY --from=frontend-builder /app/dist ./dist
+# Frontend static
+COPY --from=frontend-builder /app/frontend/dist ./static
 
-ENV PORT=8000
-EXPOSE 8000
-
-CMD ["python", "main.py"]
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT}
