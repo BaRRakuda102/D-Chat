@@ -397,7 +397,7 @@ async def accept_friend_request(
             chat_id=chat_id,
             name=req.from_user.display_name or req.from_user.username,
             type="private",
-            participants=[req.from_user, req.to_user_rel]
+            participants=[req.from_user, req.to_user]
         )
         db.add(chat)
         db.commit()

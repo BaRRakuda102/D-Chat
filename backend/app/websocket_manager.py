@@ -1,10 +1,11 @@
-from fastapi import WebSocket, WebSocketException
+from fastapi import WebSocket, WebSocketException, WebSocketDisconnect
 from typing import Dict, Set, List, Optional
 import json
 from datetime import datetime
 from .redis_client import redis_client
 from .auth import get_current_user_ws
 import asyncio
+
 
 class ConnectionManager:
     def __init__(self):
