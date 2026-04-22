@@ -13,21 +13,27 @@ class ConnectionManager:
         self.lock = asyncio.Lock()
     
     async def connect(self, websocket: WebSocket, token: str) -> tuple[int, str]:
+        await websocket.accept()
+
         try:
             payload = await get_current_user_ws(token)
             user_id = int(payload.get("sub"))
             if not user_id:
-                raise WebSocketException(code=1008, reason="Invalid user")
+                await websocket.close(code=1008, reason="Invalid user")
+                return None, None
+        except WebSocketException as e:
+            await websocket.close(code=e.code, reason=e.reason)
+            return None, None
         except Exception:
-            raise WebSocketException(code=1008, reason="Authentication failed")
-        
+            await websocket.close(code=1008, reason="Authentication failed")
+            return None, None
+
         current_conns = await redis_client.get_user_connections(user_id)
         if len(current_conns) >= 5:
-            raise WebSocketException(code=1008, reason="Too many connections")
-        
+            await websocket.close(code=1008, reason="Too many connections")
+            return None, None
+
         conn_id = f"{user_id}_{datetime.utcnow().timestamp()}_{id(websocket)}"
-        
-        await websocket.accept()
         
         async with self.lock:
             self.active_connections[conn_id] = websocket
