@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { useThemeStore } '../store/themeStore';
+import { useThemeStore } from '../store/themeStore';
 import { useTranslation } from '../i18n/useTranslation';
 import { Shield, Users, Image, Globe, Moon, Sun, Settings, Languages, X } from 'lucide-react';
 
