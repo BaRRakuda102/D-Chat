@@ -12,7 +12,6 @@ SECRET_KEY = os.getenv("JWT_SECRET", "change-this-in-production")
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
-# Argon2 для новых пользователей
 ph = PasswordHasher(
     time_cost=2,
     memory_cost=65536,
@@ -21,27 +20,23 @@ ph = PasswordHasher(
     salt_len=16
 )
 
-# bcrypt для старых пользователей (обратная совместимость)
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 security = HTTPBearer()
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    # Пробуем argon2 первым
     try:
         ph.verify(hashed_password, plain_password)
         return True
     except VerifyMismatchError:
         return False
     except Exception:
-        # Если не argon2 — пробуем bcrypt (старые пользователи)
         try:
             return bcrypt_context.verify(plain_password, hashed_password)
         except Exception:
             return False
 
 def get_password_hash(password: str) -> str:
-    # Всегда используем argon2 для новых
     return ph.hash(password)
 
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
@@ -68,7 +63,8 @@ async def get_current_user_ws(token: str) -> dict:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         if payload.get("type") != "access":
             raise WebSocketException(code=1008, reason="Invalid token type")
-        if datetime.fromtimestamp(payload.get("exp", 0)) < datetime.utcnow():
+        exp = payload.get("exp", 0)
+        if datetime.fromtimestamp(exp) < datetime.utcnow():
             raise WebSocketException(code=1008, reason="Token expired")
         return payload
     except JWTError:
